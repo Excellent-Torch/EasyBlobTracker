@@ -7,10 +7,10 @@ import librosa
 import pygame
 
 # === CONFIG ===
-font_path = "ibmreg.ttf" # for custom fonts
-video_path = "birds.mp4" #video to be blobbed
-audio_path = "song.wav" #audio to be blobbed to
-output_name = "output.mp4" #export render
+font_path = r"static\ibmreg.ttf" # for custom fonts
+video_path = r"static\video.mp4" #video to be blobbed
+audio_path = r"static\song.wav" #audio to be blobbed to
+output_name = r"exports\output.mp4" #export render
 cap = cv2.VideoCapture(video_path)
 video_fps = cap.get(cv2.CAP_PROP_FPS)
 ENABLE_PREVIEW = True  # you can turn this off if you just want the exported render
