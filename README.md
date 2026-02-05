@@ -37,17 +37,11 @@ Output: `exports/output.mp4`
 
 ## Example Videos
 
-Add sample videos to your repo in `samples/` folder:
-
 ### Input Video
-<video width="640" height="480" controls>
-  <source src="exports/output.mp4" type="video/mp4">
-</video>
+![Input Video](samples/video.gif)
 
 ### Output Video (With Blobs)
-<video width="640" height="480" controls>
-  <source src="static/video.mp4" type="video/mp4">
-</video>
+![Output Video](samples/output.gif)
 
 ## Configuration
 
