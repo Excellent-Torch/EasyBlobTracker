@@ -22,21 +22,21 @@ AUDIO_PATH = r"static\song.wav"
 OUTPUT_NAME = r"exports\output.mp4"
 
 # Video settings
-VIDEO_FPS = 60.0
-FONT_SIZE = 8
+VIDEO_FPS = 30.0
+FONT_SIZE = 4  # Size of font for blob text
 ENABLE_PREVIEW = True
 PREVIEW_SCALE = 0.5  # 0.5 = 50% of original size
 
 # Blob text parameters
-BLOB_TEXT_FONT_SIZE = 24  # Size of blob numbers/words (increase for bigger text)
-ENABLE_RANDOM_WORDS = True  # Set to False to use numbers instead
+BLOB_TEXT_FONT_SIZE = 16  # Size of blob numbers/words (increase for bigger text)
+ENABLE_RANDOM_WORDS = False  # Set to False to use numbers instead
 RANDOM_WORD_LIST = [
     "RIDI", "RIDINUUL", ".COM", "NUUL", "WWW"
 ]  # Words to randomly display on blobs
 
 # Stylization parameters
 EFFECT_SIZE_MULTIPLIER = 1.5  # Increase for larger blobs/effects
-BLOB_OUTLINE_COLOR = (255, 0, 128)  # (R,G,B)
+BLOB_OUTLINE_COLOR = (0, 0, 255)  # (R,G,B)
 TEXT_COLOR = (255, 255, 255)  # (R,G,B)
 LINE_COLOR = (255, 255, 255)  # (R,G,B)
 INVERTED_EFFECT_OPACITY = 1.0  # 0.0 to 1.0
@@ -46,10 +46,13 @@ ENABLE_BLOB_STABILIZATION = True
 BLOB_PERSISTENCE_FRAMES = 12  # Higher = smoother but more lag
 BLOB_SMOOTHING_FACTOR = 0.6  # 0.0 = no smoothing, 1.0 = full smoothing
 
+# Random variation parameters
+RANDOM_VALUE_CHANGE_SPEED = 0.05  # Rate of random value change (higher = faster variation)
+
 # Motion detection settings
 MOTION_THRESHOLD = 25
 MIN_BLOBS = 0.1
-MAX_BLOBS_ALLOWED = 18
+MAX_BLOBS_ALLOWED = 2
 
 # ============================================================================
 # UTILITY FUNCTIONS
@@ -67,6 +70,15 @@ def get_blob_text():
         return random.choice(RANDOM_WORD_LIST)
     else:
         return str(random.randint(10, 99))
+
+
+def slowly_vary_value(current_value, min_val=0, max_val=1, change_speed=None):
+    """Slowly add or subtract random values to create gradual variation"""
+    if change_speed is None:
+        change_speed = RANDOM_VALUE_CHANGE_SPEED
+    random_change = random.uniform(-change_speed, change_speed)
+    new_value = current_value + random_change
+    return max(min_val, min(max_val, new_value))
 
 
 def setup_audio_analysis(audio_path, video_fps):
@@ -295,6 +307,7 @@ def main():
     prev_gray = None
     prev_blobs = []
     frame_idx = 0
+    random_variation = 0.5  # Tracks slowly varying random value
 
     print("Processing frames...")
 
@@ -351,14 +364,14 @@ def main():
                 if i not in blob_ids or current_time > blob_ids[i].get('expires', 0):
                     blob_ids[i] = {
                         'value': blob['value'],
-                        'expires': current_time + random.uniform(1.5, 4.0)
+                        'expires': current_time + random.uniform(3.0, 7.0)
                     }
 
             # Update anchor blob
             if blobs:
                 if anchor_blob_id is None or current_time > anchor_switch_time or anchor_blob_id >= len(blobs):
                     anchor_blob_id = random.randint(0, len(blobs) - 1)
-                    anchor_switch_time = current_time + random.uniform(3, 6)
+                    anchor_switch_time = current_time + random.uniform(5, 10)
 
             # Create inverted frame
             inverted_frame = cv2.bitwise_not(frame)
